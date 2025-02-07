@@ -6,16 +6,32 @@
     <br>regop
   </p>
 </h1>
-<p align="center">
-  Easy file manipulation with *reg*ex and *op*erators
-</p>
 
----
+<p align="center">
+  Easy file manipulation with <b>reg</b>ex and <b>op</b>erators
+</p>
 
 <!-- vim-markdown-toc GFM -->
 
-* [TODO](#todo)
+* [Motivation](#motivation)
+* [Usage](#usage)
+* [Installation](#installation)
+* [Development](#development)
 
 <!-- vim-markdown-toc -->
 
-# TODO
+## Motivation
+
+TODO
+
+## Usage
+
+TODO
+
+## Installation
+
+TODO
+
+## Development
+
+TODO
