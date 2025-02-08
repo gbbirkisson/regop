@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::str::FromStr;
+use std::string::ToString;
 
 use anyhow::{anyhow, bail, ensure, Context};
 use clap::Parser;
@@ -21,7 +22,7 @@ impl FromStr for Capture {
         let regex = Regex::new(s).context("not a valid regex")?;
         let names = regex
             .capture_names()
-            .filter_map(|n| n.map(|s| s.to_string()))
+            .filter_map(|n| n.map(ToString::to_string))
             .collect::<HashSet<_>>();
         Ok(Self { regex, names })
     }
@@ -48,18 +49,19 @@ enum Value {
     Capture(String),
 }
 
+#[allow(clippy::unwrap_used)]
 impl From<&str> for Value {
     fn from(value: &str) -> Self {
-        if let Ok(v) = value.parse::<isize>() {
-            Self::Int(v)
-        } else {
-            let re = Regex::new(r"<([^>]+)>").unwrap();
-            if let Some(m) = re.captures(value) {
-                Self::Capture(m.get(1).unwrap().as_str().to_string())
-            } else {
-                Self::String(value.to_string())
-            }
-        }
+        value.parse::<isize>().map_or_else(
+            |_| {
+                let re = Regex::new(r"<([^>]+)>").unwrap();
+                re.captures(value).map_or_else(
+                    || Self::String(value.to_string()),
+                    |m| Self::Capture(m.get(1).unwrap().as_str().to_string()),
+                )
+            },
+            Self::Int,
+        )
     }
 }
 
@@ -87,27 +89,27 @@ impl FromStr for Operation {
                 .ok_or_else(|| anyhow!("no operator in operation"))?
                 .as_str()
             {
-                "inc" => Operation {
+                "inc" => Self {
                     target,
                     value: param.unwrap_or(Value::Int(1)),
                     op: Operator::Add,
                 },
-                "dec" => Operation {
+                "dec" => Self {
                     target,
                     value: param.unwrap_or(Value::Int(1)),
                     op: Operator::Sub,
                 },
-                "add" => Operation {
+                "add" => Self {
                     target,
                     value: param.ok_or_else(|| anyhow!("no parameter in operation"))?,
                     op: Operator::Add,
                 },
-                "sub" => Operation {
+                "sub" => Self {
                     target,
                     value: param.ok_or_else(|| anyhow!("no parameter in operation"))?,
                     op: Operator::Sub,
                 },
-                "rep" => Operation {
+                "rep" => Self {
                     target,
                     value: param.ok_or_else(|| anyhow!("no parameter in operation"))?,
                     op: Operator::Replace,
@@ -150,13 +152,13 @@ struct Regop {
 fn main() -> anyhow::Result<()> {
     let regop = Regop::parse();
 
-    if !regop.file.is_empty() {
-        for file in regop.file.iter() {
-            handle_file(&regop, file)?;
-        }
-    } else {
+    if regop.file.is_empty() {
         for file in std::io::stdin().lines() {
             handle_file(&regop, &file?)?;
+        }
+    } else {
+        for file in &regop.file {
+            handle_file(&regop, file)?;
         }
     }
 
@@ -195,7 +197,7 @@ fn process(
     let mut captures: HashMap<String, Vec<(usize, usize, &str)>> = HashMap::new();
 
     // First pass to get all value captures
-    for cap in regex.iter() {
+    for cap in regex {
         for name in &cap.names {
             if captures_as_values.contains(name) {
                 for m in cap.regex.captures_iter(&content) {
@@ -215,14 +217,14 @@ fn process(
         ensure!(
             captures.contains_key(cap),
             format!("'<{cap}>' used as value but not found")
-        )
+        );
     }
 
     let mut edits = Vec::new();
 
     // Second pass to collect edits
     for op in ops {
-        for cap in regex.iter() {
+        for cap in regex {
             if cap.names.contains(&op.target) {
                 for m in cap.regex.captures_iter(&content) {
                     if let Some(m) = m.name(&op.target) {
@@ -261,7 +263,7 @@ struct Edit {
 fn edit<'a>(
     op: &Operation,
     m: &Match<'_>,
-    old: &'a str,
+    _old: &'a str,
     captures: &HashMap<String, Vec<(usize, usize, &'a str)>>,
 ) -> anyhow::Result<Edit> {
     let start = m.start();
@@ -275,6 +277,7 @@ fn edit<'a>(
                     .map(|c| (distance(start, end, c.0, c.1), c.2))
                     .collect::<Vec<_>>();
                 c.sort_by_key(|c| c.0);
+                #[allow(clippy::unwrap_used)]
                 c.first().unwrap().1 // It is safe to unwrap here
             });
             Value::String(
@@ -306,7 +309,7 @@ fn edit<'a>(
     Ok(Edit { start, end, new })
 }
 
-fn distance(start_a: usize, end_a: usize, start_b: usize, end_b: usize) -> Option<usize> {
+const fn distance(start_a: usize, end_a: usize, start_b: usize, end_b: usize) -> Option<usize> {
     if end_a <= start_b {
         Some(start_b - end_a)
     } else if end_b <= start_a {
