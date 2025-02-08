@@ -9,6 +9,14 @@ repository = "https://github.com/gbbirkisson/regop"
 inherits = "release"
 lto = "thin"
 
+[lints.clippy]
+pedantic = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+unwrap_used = "deny"
+missing-errors-doc = "allow"
+missing-panics-doc = "allow"
+fallible_impl_from = "allow"
+
 [dependencies]
 anyhow = "1.0.95"
 clap = { version = "4.5.28", features = ["derive"] }
