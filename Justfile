@@ -25,10 +25,18 @@ ci: lint-fmt lint-clippy test
 dist:
   dist init -y
 
-# Little test run
+# Little test runs
 run:
   cargo run -- \
     -r 'version = "(?<major>[^\.])\.(?<minor>[^\.])\.(?<patch>[^\.])"' \
+    -o "<major>:inc" \
+    -o "<minor>:inc:2" \
+    -o "<patch>:inc:10" \
+    Cargo.toml
+
+  cargo run -- \
+    -l \
+    -r '^version = "(?<major>[^\.])\.(?<minor>[^\.])\.(?<patch>[^\.])"$' \
     -o "<major>:inc" \
     -o "<minor>:inc:2" \
     -o "<patch>:inc:10" \

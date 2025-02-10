@@ -132,6 +132,11 @@ struct Regop {
     #[clap(default_value_t = false)]
     save: bool,
 
+    /// Operate on lines induvidually, one by one
+    #[arg(short, long)]
+    #[clap(default_value_t = false)]
+    lines: bool,
+
     /// Regular expression, can be repeated
     #[arg(short, long, value_parser = clap::value_parser!(Capture))]
     regex: Vec<Capture>,
@@ -168,10 +173,12 @@ fn main() -> anyhow::Result<()> {
 fn handle_file(regop: &Regop, file: &str) -> anyhow::Result<()> {
     let old_content = fs::read_to_string(file).context(format!("unable to read file '{file}'"))?;
     if !regop.save {
-        if let Some(new_content) = process(&regop.regex, &regop.op, old_content.clone())? {
+        if let Some(new_content) =
+            process(regop.lines, &regop.regex, &regop.op, old_content.clone())?
+        {
             diff::diff(file, &old_content, &new_content);
         }
-    } else if let Some(new_content) = process(&regop.regex, &regop.op, old_content)? {
+    } else if let Some(new_content) = process(regop.lines, &regop.regex, &regop.op, old_content)? {
         fs::write(file, new_content).context(format!("unable to write file '{file}'"))?;
     }
 
@@ -179,6 +186,35 @@ fn handle_file(regop: &Regop, file: &str) -> anyhow::Result<()> {
 }
 
 fn process(
+    lines: bool,
+    regex: &[Capture],
+    ops: &[Operation],
+    mut content: String,
+) -> anyhow::Result<Option<String>> {
+    if lines {
+        let mut change = false;
+
+        for line in content.clone().lines() {
+            if let Some(new_line) = regop(regex, ops, line.to_string())? {
+                change = true;
+                let start = content
+                    .find(line)
+                    .ok_or_else(|| anyhow!("unable to find line index"))?;
+                content.replace_range(start..start + line.len(), &new_line);
+            }
+        }
+
+        if change {
+            Ok(Some(content))
+        } else {
+            Ok(None)
+        }
+    } else {
+        regop(regex, ops, content)
+    }
+}
+
+fn regop(
     regex: &[Capture],
     ops: &[Operation],
     mut content: String,
