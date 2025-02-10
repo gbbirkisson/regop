@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/gbbirkisson/regop/compare/0.1.2...0.2.0) (2025-02-10)
+
+
+### Features
+
+* add lines flag ([#9](https://github.com/gbbirkisson/regop/issues/9)) ([438a42c](https://github.com/gbbirkisson/regop/commit/438a42ca388fe056004a9b78b05626187a056bab))
+
+
+### Bug Fixes
+
+* add CI ([#6](https://github.com/gbbirkisson/regop/issues/6)) ([0c853ea](https://github.com/gbbirkisson/regop/commit/0c853ea97f75d63019f0ab384a0fc8ce01646d00))
+* add install to justfile ([#7](https://github.com/gbbirkisson/regop/issues/7)) ([79e08af](https://github.com/gbbirkisson/regop/commit/79e08afb25defee0cccbcd2a9a70eb7ae23ec469))
+* add installer script to dist ([#10](https://github.com/gbbirkisson/regop/issues/10)) ([ce560f1](https://github.com/gbbirkisson/regop/commit/ce560f16b81dc86bc966cc717a4340b44c885f4c))
+* add renovate ([e7256c1](https://github.com/gbbirkisson/regop/commit/e7256c1695bdf8ad303edca9a613d16c238634a7))
+* finish first working version ([#8](https://github.com/gbbirkisson/regop/issues/8)) ([bb09481](https://github.com/gbbirkisson/regop/commit/bb09481d6b667a37324dff7894ac8dd0baaaa30f))
+
 ## [0.1.2](https://github.com/gbbirkisson/regop/compare/0.1.1...0.1.2) (2025-02-07)
 
 
