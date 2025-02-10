@@ -25,6 +25,15 @@ ci: lint-fmt lint-clippy test
 dist:
   dist init -y
 
+# Little test run
+run:
+  cargo run -- \
+    -r 'version = "(?<major>[^\.])\.(?<minor>[^\.])\.(?<patch>[^\.])"' \
+    -o "<major>:inc" \
+    -o "<minor>:inc:2" \
+    -o "<patch>:inc:10" \
+    Cargo.toml
+
 # Install locally
 install:
   cargo install --path .

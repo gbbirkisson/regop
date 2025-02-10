@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::fs;
+use std::ops::{Add, Sub};
 use std::str::FromStr;
 use std::string::ToString;
 
@@ -126,15 +127,10 @@ impl FromStr for Operation {
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Regop {
-    /// Verbose logging
+    /// Overwrite existing files
     #[arg(short, long)]
     #[clap(default_value_t = false)]
-    verbose: bool,
-
-    /// Only print diff to stdout, do not edit files
-    #[arg(short, long)]
-    #[clap(default_value_t = false)]
-    diff: bool,
+    save: bool,
 
     /// Regular expression, can be repeated
     #[arg(short, long, value_parser = clap::value_parser!(Capture))]
@@ -153,6 +149,10 @@ fn main() -> anyhow::Result<()> {
     let regop = Regop::parse();
 
     if regop.file.is_empty() {
+        ensure!(
+            !atty::is(atty::Stream::Stdin),
+            "supply filename or pipe a list of file to stdin"
+        );
         for file in std::io::stdin().lines() {
             handle_file(&regop, &file?)?;
         }
@@ -167,7 +167,7 @@ fn main() -> anyhow::Result<()> {
 
 fn handle_file(regop: &Regop, file: &str) -> anyhow::Result<()> {
     let old_content = fs::read_to_string(file).context(format!("unable to read file '{file}'"))?;
-    if regop.diff {
+    if !regop.save {
         if let Some(new_content) = process(&regop.regex, &regop.op, old_content.clone())? {
             diff::diff(file, &old_content, &new_content);
         }
@@ -263,7 +263,7 @@ struct Edit {
 fn edit<'a>(
     op: &Operation,
     m: &Match<'_>,
-    _old: &'a str,
+    old: &'a str,
     captures: &HashMap<String, Vec<(usize, usize, &'a str)>>,
 ) -> anyhow::Result<Edit> {
     let start = m.start();
@@ -290,13 +290,13 @@ fn edit<'a>(
 
     let new = match op.op {
         Operator::Add => match value {
-            Value::Int(_) => todo!(),
-            Value::String(_) => todo!(),
+            Value::Int(num) => parse_int(old)?.add(num).to_string(),
+            Value::String(num) => parse_int(old)?.add(parse_int(&num)?).to_string(),
             Value::Capture(_) => bail!("this should not happen"),
         },
         Operator::Sub => match value {
-            Value::Int(_) => todo!(),
-            Value::String(_) => todo!(),
+            Value::Int(num) => parse_int(old)?.sub(num).to_string(),
+            Value::String(num) => parse_int(old)?.sub(parse_int(&num)?).to_string(),
             Value::Capture(_) => bail!("this should not happen"),
         },
         Operator::Replace => match value {
@@ -307,6 +307,11 @@ fn edit<'a>(
     };
 
     Ok(Edit { start, end, new })
+}
+
+fn parse_int(s: &str) -> anyhow::Result<isize> {
+    s.parse::<isize>()
+        .context(format!("cannot parse '{s}' as int"))
 }
 
 const fn distance(start_a: usize, end_a: usize, start_b: usize, end_b: usize) -> Option<usize> {
