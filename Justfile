@@ -24,3 +24,7 @@ ci: lint-fmt lint-clippy test
 # Recreate release.yml workflow
 dist:
   dist init -y
+
+# Install locally
+install:
+  cargo install --path .
