@@ -1,6 +1,6 @@
 # Show this help
 default:
-  just --list
+  @just --list
 
 # Build release
 build:
