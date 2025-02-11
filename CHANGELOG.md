@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/gbbirkisson/regop/compare/0.2.0...0.2.1) (2025-02-11)
+
+
+### Bug Fixes
+
+* refactor and cleanup ([#12](https://github.com/gbbirkisson/regop/issues/12)) ([bf377bc](https://github.com/gbbirkisson/regop/commit/bf377bc44d452acd573d263ac5e9c548f00a40a3))
+
 ## [0.2.0](https://github.com/gbbirkisson/regop/compare/0.1.2...0.2.0) (2025-02-10)
 
 
