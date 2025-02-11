@@ -20,7 +20,7 @@ impl FromStr for Capture {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let regex = Regex::new(s).context("not a valid regex")?;
+        let regex = Regex::new(s).context(format!("'{s}' not a valid regex"))?;
         let names = regex
             .capture_names()
             .filter_map(|n| n.map(ToString::to_string))
@@ -30,28 +30,28 @@ impl FromStr for Capture {
 }
 
 #[derive(Debug, Clone)]
-struct Operation {
+struct Operator {
     target: String,
-    value: Value,
-    op: Operator,
+    op: Operation,
+    value: Param,
 }
 
 #[derive(Debug, Clone)]
-enum Operator {
-    Add,
-    Sub,
+enum Operation {
+    Inc,
+    Dec,
     Replace,
 }
 
 #[derive(Debug, Clone)]
-enum Value {
+enum Param {
     Int(isize),
     String(String),
     Capture(String),
 }
 
 #[allow(clippy::unwrap_used)]
-impl From<&str> for Value {
+impl From<&str> for Param {
     fn from(value: &str) -> Self {
         value.parse::<isize>().map_or_else(
             |_| {
@@ -66,54 +66,44 @@ impl From<&str> for Value {
     }
 }
 
-impl FromStr for Operation {
+impl FromStr for Operator {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let re = Regex::new(r"<([^>]+)>:([^:]+):?([^:]+)?")?;
         let m = re
             .captures(s)
-            .ok_or_else(|| anyhow!("not a valid operation format"))?;
-        ensure!(m.len() == 4, "not a valid operation format");
+            .ok_or_else(|| anyhow!(format!("'{s}' not a valid operator format")))?;
+        ensure!(m.len() == 4, format!("'{s}' not a valid operator format"));
 
         let target = m
             .get(1)
-            .ok_or_else(|| anyhow!("no target in operation"))?
+            .ok_or_else(|| anyhow!("no target in operator"))?
             .as_str()
             .to_string();
 
-        let param = m.get(3).map(|p| Value::from(p.as_str()));
+        let param = m.get(3).map(|p| Param::from(p.as_str()));
 
         Ok(
             match m
                 .get(2)
-                .ok_or_else(|| anyhow!("no operator in operation"))?
+                .ok_or_else(|| anyhow!("no operation in operator"))?
                 .as_str()
             {
                 "inc" => Self {
                     target,
-                    value: param.unwrap_or(Value::Int(1)),
-                    op: Operator::Add,
+                    op: Operation::Inc,
+                    value: param.unwrap_or(Param::Int(1)),
                 },
                 "dec" => Self {
                     target,
-                    value: param.unwrap_or(Value::Int(1)),
-                    op: Operator::Sub,
-                },
-                "add" => Self {
-                    target,
-                    value: param.ok_or_else(|| anyhow!("no parameter in operation"))?,
-                    op: Operator::Add,
-                },
-                "sub" => Self {
-                    target,
-                    value: param.ok_or_else(|| anyhow!("no parameter in operation"))?,
-                    op: Operator::Sub,
+                    op: Operation::Dec,
+                    value: param.unwrap_or(Param::Int(1)),
                 },
                 "rep" => Self {
                     target,
-                    value: param.ok_or_else(|| anyhow!("no parameter in operation"))?,
-                    op: Operator::Replace,
+                    op: Operation::Replace,
+                    value: param.ok_or_else(|| anyhow!("parameter required in 'rep' operator"))?,
                 },
                 o => {
                     bail!(format!("'{o}' is not a valid operator"))
@@ -141,9 +131,9 @@ struct Regop {
     #[arg(short, long, value_parser = clap::value_parser!(Capture))]
     regex: Vec<Capture>,
 
-    /// Operation, can be repeated
-    #[arg(short, long, value_parser = clap::value_parser!(Operation))]
-    op: Vec<Operation>,
+    /// Operator, can be repeated
+    #[arg(short, long, value_parser = clap::value_parser!(Operator))]
+    op: Vec<Operator>,
 
     /// File to operate on, can be repeated
     #[arg()]
@@ -156,7 +146,7 @@ fn main() -> anyhow::Result<()> {
     if regop.file.is_empty() {
         ensure!(
             !atty::is(atty::Stream::Stdin),
-            "supply filename or pipe a list of file to stdin"
+            "supply filename or pipe a list of files to stdin"
         );
         for file in std::io::stdin().lines() {
             handle_file(&regop, &file?)?;
@@ -188,7 +178,7 @@ fn handle_file(regop: &Regop, file: &str) -> anyhow::Result<()> {
 fn process(
     lines: bool,
     regex: &[Capture],
-    ops: &[Operation],
+    ops: &[Operator],
     mut content: String,
 ) -> anyhow::Result<Option<String>> {
     if lines {
@@ -216,13 +206,13 @@ fn process(
 
 fn regop(
     regex: &[Capture],
-    ops: &[Operation],
+    ops: &[Operator],
     mut content: String,
 ) -> anyhow::Result<Option<String>> {
     let captures_as_values = ops
         .iter()
         .filter_map(|op| {
-            if let Value::Capture(c) = &op.value {
+            if let Param::Capture(c) = &op.value {
                 Some(c.clone())
             } else {
                 None
@@ -297,7 +287,7 @@ struct Edit {
 }
 
 fn edit<'a>(
-    op: &Operation,
+    op: &Operator,
     m: &Match<'_>,
     old: &'a str,
     captures: &HashMap<String, Vec<(usize, usize, &'a str)>>,
@@ -306,7 +296,7 @@ fn edit<'a>(
     let end = m.end();
 
     let value = match &op.value {
-        Value::Capture(name) => {
+        Param::Capture(name) => {
             let c = captures.get(name).map(|v| {
                 let mut c = v
                     .iter()
@@ -316,7 +306,7 @@ fn edit<'a>(
                 #[allow(clippy::unwrap_used)]
                 c.first().unwrap().1 // It is safe to unwrap here
             });
-            Value::String(
+            Param::String(
                 c.ok_or_else(|| anyhow!(format!("no capture found named '{name}'")))?
                     .to_string(),
             )
@@ -325,20 +315,20 @@ fn edit<'a>(
     };
 
     let new = match op.op {
-        Operator::Add => match value {
-            Value::Int(num) => parse_int(old)?.add(num).to_string(),
-            Value::String(num) => parse_int(old)?.add(parse_int(&num)?).to_string(),
-            Value::Capture(_) => bail!("this should not happen"),
+        Operation::Inc => match value {
+            Param::Int(num) => parse_int(old)?.add(num).to_string(),
+            Param::String(num) => parse_int(old)?.add(parse_int(&num)?).to_string(),
+            Param::Capture(_) => bail!("this should not happen"),
         },
-        Operator::Sub => match value {
-            Value::Int(num) => parse_int(old)?.sub(num).to_string(),
-            Value::String(num) => parse_int(old)?.sub(parse_int(&num)?).to_string(),
-            Value::Capture(_) => bail!("this should not happen"),
+        Operation::Dec => match value {
+            Param::Int(num) => parse_int(old)?.sub(num).to_string(),
+            Param::String(num) => parse_int(old)?.sub(parse_int(&num)?).to_string(),
+            Param::Capture(_) => bail!("this should not happen"),
         },
-        Operator::Replace => match value {
-            Value::Int(i) => format!("{i}"),
-            Value::String(s) => s,
-            Value::Capture(_) => bail!("this should not happen"),
+        Operation::Replace => match value {
+            Param::Int(i) => format!("{i}"),
+            Param::String(s) => s,
+            Param::Capture(_) => bail!("this should not happen"),
         },
     };
 
