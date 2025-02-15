@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/gbbirkisson/regop/compare/0.2.1...0.2.2) (2025-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate clap to v4.5.29 ([#14](https://github.com/gbbirkisson/regop/issues/14)) ([3a78f6f](https://github.com/gbbirkisson/regop/commit/3a78f6f79a67bc0867d7259078b57486aa84c037))
+
 ## [0.2.1](https://github.com/gbbirkisson/regop/compare/0.2.0...0.2.1) (2025-02-11)
 
 
