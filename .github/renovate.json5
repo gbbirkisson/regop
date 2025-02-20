@@ -9,7 +9,7 @@
       matchCurrentVersion: '!/^0/',
       automerge: true,
     }
-  ]
+  ],
   customManagers: [
     {
       customType: 'regex',
