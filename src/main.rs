@@ -4,7 +4,7 @@ use std::ops::{Add, Sub};
 use std::str::FromStr;
 use std::string::ToString;
 
-use anyhow::{anyhow, bail, ensure, Context};
+use anyhow::{Context, anyhow, bail, ensure};
 use clap::Parser;
 use regex::{Match, Regex};
 
@@ -194,11 +194,7 @@ fn process(
             }
         }
 
-        if change {
-            Ok(Some(content))
-        } else {
-            Ok(None)
-        }
+        if change { Ok(Some(content)) } else { Ok(None) }
     } else {
         regop(regex, ops, content)
     }

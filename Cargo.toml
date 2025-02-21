@@ -1,7 +1,7 @@
 [package]
 name = "regop"
 version = "0.2.1"
-edition = "2021"
+edition = "2024"
 repository = "https://github.com/gbbirkisson/regop"
 
 # The profile that 'dist' will build with
