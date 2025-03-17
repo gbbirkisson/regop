@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/gbbirkisson/regop/compare/0.2.3...0.2.4) (2025-03-17)
+
+
+### Bug Fixes
+
+* **deps:** update extractions/setup-just action to v3 ([#28](https://github.com/gbbirkisson/regop/issues/28)) ([9e08add](https://github.com/gbbirkisson/regop/commit/9e08add9d43386f1e040d87ba323c2f917973e33))
+
 ## [0.2.3](https://github.com/gbbirkisson/regop/compare/0.2.2...0.2.3) (2025-03-11)
 
 
