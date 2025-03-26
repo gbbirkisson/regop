@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/gbbirkisson/regop/compare/0.2.3...0.3.0) (2025-03-26)
+
+
+### Features
+
+* support stdout, change -s to -w and give examples in help ([#31](https://github.com/gbbirkisson/regop/issues/31)) ([5d845b6](https://github.com/gbbirkisson/regop/commit/5d845b6dea74979c7bbb8cde882082751b20d94a))
+
+
+### Bug Fixes
+
+* **deps:** update dependency rust to v1.85.1 ([#30](https://github.com/gbbirkisson/regop/issues/30)) ([7169d97](https://github.com/gbbirkisson/regop/commit/7169d9701d931d36f57a3a7c75ad87b573966255))
+* **deps:** update extractions/setup-just action to v3 ([#28](https://github.com/gbbirkisson/regop/issues/28)) ([9e08add](https://github.com/gbbirkisson/regop/commit/9e08add9d43386f1e040d87ba323c2f917973e33))
+
 ## [0.2.3](https://github.com/gbbirkisson/regop/compare/0.2.2...0.2.3) (2025-03-11)
 
 
