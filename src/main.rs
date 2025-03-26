@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::fs;
+use std::io::Read;
 use std::ops::{Add, Sub};
 use std::str::FromStr;
 use std::string::ToString;
@@ -113,14 +114,46 @@ impl FromStr for Operator {
     }
 }
 
-/// regop tool
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[command(
+    author,
+    version,
+    about,
+    long_about = None,
+    after_help = concat!("\x1b[1m\x1b[4mExamples:\x1b[0m", r#"
+
+  # Increment edition in Cargo.toml by one
+  regop \
+    -r 'edition = "(?<edition>[^"]+)' \
+    -o '<edition>:inc' \
+    Cargo.toml
+
+  # Swap anyhow major and patch version, increment minor by 3, decrement patch by 10
+  regop \
+    -r 'anyhow = "(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)"' \
+    -o '<major>:rep:<patch>' \
+    -o '<minor>:inc:3' \
+    -o '<patch>:dec:10' \
+    Cargo.toml
+
+  # Update all major versions in all toml files
+  find -name '*.toml' | regop \
+    -w \
+    -r '"(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)"' \
+    -o '<major>:inc'
+
+  # Read from stdin and write to stdout
+  cat Cargo.toml | regop \
+    -w \
+    -r "version = \"(?<major>\d)\.(?<minor>\d)" \
+    -o "<major>:rep:21" \
+    -"#)
+)]
 struct Regop {
-    /// Overwrite existing files
+    /// Write to files, will write to stdout if input file is `-`
     #[arg(short, long)]
     #[clap(default_value_t = false)]
-    save: bool,
+    write: bool,
 
     /// Operate on lines induvidually, one by one
     #[arg(short, long)]
@@ -135,7 +168,7 @@ struct Regop {
     #[arg(short, long, value_parser = clap::value_parser!(Operator))]
     op: Vec<Operator>,
 
-    /// File to operate on, can be repeated
+    /// File to operate on, use `-` for stdin, can be repeated
     #[arg()]
     file: Vec<String>,
 }
@@ -161,15 +194,26 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn handle_file(regop: &Regop, file: &str) -> anyhow::Result<()> {
-    let old_content = fs::read_to_string(file).context(format!("unable to read file '{file}'"))?;
-    if !regop.save {
+    let old_content = match file {
+        "-" => {
+            let mut stdin = String::new();
+            std::io::stdin().read_to_string(&mut stdin)?;
+            stdin
+        }
+        _ => fs::read_to_string(file).context(format!("unable to read file '{file}'"))?,
+    };
+
+    if !regop.write {
         if let Some(new_content) =
             process(regop.lines, &regop.regex, &regop.op, old_content.clone())?
         {
             diff::diff(file, &old_content, &new_content);
         }
     } else if let Some(new_content) = process(regop.lines, &regop.regex, &regop.op, old_content)? {
-        fs::write(file, new_content).context(format!("unable to write file '{file}'"))?;
+        match file {
+            "-" => print!("{new_content}"),
+            _ => fs::write(file, new_content).context(format!("unable to write file '{file}'"))?,
+        }
     }
 
     Ok(())
