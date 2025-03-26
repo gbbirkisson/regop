@@ -35,22 +35,25 @@ manipulate files:
 
 ```bash
 # Increment edition in Cargo.toml by one
-$ regop -r 'edition = "(?<edition>[^"]+)' \
+$ regop \
+    -r 'edition = "(?<edition>[^"]+)' \
     -o '<edition>:inc' \
     Cargo.toml
+
 ┌───────────────────────────────────────────────────────────────────────────────
 │ Cargo.toml
 ├───────────────────────────────────────────────────────────────────────────────
-│ 3   3    │ version = "0.1.2"
-│ 4        │-edition = "2021"
-│     4    │+edition = "2022"
+│ 3   3    │ version = "0.2.3"
+│ 4        │-edition = "2024"
+│     4    │+edition = "2025"
 │ 5   5    │ repository = "https://github.com/gbbirkisson/regop"
 └───────────────────────────────────────────────────────────────────────────────
 ```
 
 ```bash
 # Swap anyhow major and patch version, increment minor by 3, decrement patch by 10
-$ regop -r 'anyhow = "(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)"' \
+$ regop \
+    -r 'anyhow = "(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)"' \
     -o '<major>:rep:<patch>' \
     -o '<minor>:inc:3' \
     -o '<patch>:dec:10' \
@@ -63,6 +66,22 @@ $ regop -r 'anyhow = "(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)"' \
 │     21   │+anyhow = "95.3.85"
 │ 22  22   │ atty = "0.2.14"
 └───────────────────────────────────────────────────────────────────────────────
+```
+
+```bash
+# Update all major versions in all toml files
+$ find -name '*.toml' | regop \
+    -w \
+    -r '"(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)"' \
+    -o '<major>:inc'
+```
+
+```bash
+# Read from stdin and write to stdout
+$ cat Cargo.toml | regop -w \
+    -r "version = \"(?<major>\d)\.(?<minor>\d)" \
+    -o "<major>:rep:21" \
+    -
 ```
 
 ### Regex
