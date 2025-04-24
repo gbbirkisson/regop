@@ -45,3 +45,7 @@ run:
 # Install locally
 install:
   cargo install --path .
+
+# Install cargo dist
+install-dist:
+  cargo install --git https://github.com/astral-sh/cargo-dist.git --tag v0.28.4 cargo-dist
