@@ -118,10 +118,11 @@ Where:
 #### Table
 
 | Name  | Description | Default | Valid parameters | Examples |
-| ----- | ---------------- | ------ | ---------------------- | --- |
-| `inc` | Increment number | `1`    | `int`, `<capture>`     | `<a>:inc`, `<a>:inc:5`, `<a>:inc:<b>` |
-| `dec` | Decrement number | `1`    | `int`, `<capture>`     | `<a>:dec`, `<a>:dec:5`, `<a>:inc:<b>` |
-| `rep` | Replace          | `None` | `string`, `<capture>`  | `<a>:rep:mystring`, `<a>:rep:<b>`     |
+| ----- | ---------------- | ------ | --------------------- | ------------------------------------- |
+| `inc` | Increment number | `1`    | `int`, `<capture>`    | `<a>:inc`, `<a>:inc:5`, `<a>:inc:<b>` |
+| `dec` | Decrement number | `1`    | `int`, `<capture>`    | `<a>:dec`, `<a>:dec:5`, `<a>:inc:<b>` |
+| `rep` | Replace          | `None` | `string`, `<capture>` | `<a>:rep:mystring`, `<a>:rep:<b>`     |
+| `del` | Delete           | `None` | `None`                | `<a>:del`                             |
 
 ## Installation 💻
 

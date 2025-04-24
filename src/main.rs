@@ -42,6 +42,7 @@ enum Operation {
     Inc,
     Dec,
     Replace,
+    Del,
 }
 
 #[derive(Debug, Clone)]
@@ -105,6 +106,11 @@ impl FromStr for Operator {
                     target,
                     op: Operation::Replace,
                     value: param.ok_or_else(|| anyhow!("parameter required in 'rep' operator"))?,
+                },
+                "del" => Self {
+                    target,
+                    op: Operation::Del,
+                    value: Param::Int(0),
                 },
                 o => {
                     bail!(format!("'{o}' is not a valid operator"))
@@ -370,6 +376,7 @@ fn edit<'a>(
             Param::String(s) => s,
             Param::Capture(_) => bail!("this should not happen"),
         },
+        Operation::Del => String::new(),
     };
 
     Ok(Edit { start, end, new })
