@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/gbbirkisson/regop/compare/0.3.1...0.4.0) (2025-04-24)
+
+
+### Features
+
+* add del operator ([#40](https://github.com/gbbirkisson/regop/issues/40)) ([14a160d](https://github.com/gbbirkisson/regop/commit/14a160d2efa81531be959399e260770fbc5996c3))
+
+
+### Bug Fixes
+
+* release ([#41](https://github.com/gbbirkisson/regop/issues/41)) ([4a82482](https://github.com/gbbirkisson/regop/commit/4a824820cd724adf824a405b3a7cd73f41efb252))
+
 ## [0.3.1](https://github.com/gbbirkisson/regop/compare/0.3.0...0.3.1) (2025-04-22)
 
 
