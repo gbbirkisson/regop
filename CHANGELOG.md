@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/gbbirkisson/regop/compare/0.4.0...0.4.1) (2025-05-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rust to v1.87.0 ([#45](https://github.com/gbbirkisson/regop/issues/45)) ([985a0fb](https://github.com/gbbirkisson/regop/commit/985a0fb0f0ee95965e823035aec64a064a564601))
+* **deps:** update rust crate clap to v4.5.38 ([#43](https://github.com/gbbirkisson/regop/issues/43)) ([f342619](https://github.com/gbbirkisson/regop/commit/f3426193692ef833ad452dc76bd4056b13f9779b))
+
 ## [0.4.0](https://github.com/gbbirkisson/regop/compare/0.3.1...0.4.0) (2025-04-24)
 
 
