@@ -1,8 +1,14 @@
+//! Visual diff display for file changes.
+//!
+//! This module provides a colored diff output similar to git diff,
+//! showing the changes that would be made to files.
+
 use std::fmt;
 
 use console::{Style, style};
 use similar::{ChangeTag, TextDiff};
 
+/// Helper struct for formatting line numbers in diff output.
 struct Line(Option<usize>);
 
 impl fmt::Display for Line {
@@ -14,6 +20,19 @@ impl fmt::Display for Line {
     }
 }
 
+/// Display a visual diff between old and new content.
+///
+/// Shows changes in a format similar to git diff with:
+/// - Red lines for deletions
+/// - Green lines for additions
+/// - Line numbers on both sides
+/// - Highlighted inline changes
+///
+/// # Arguments
+///
+/// * `file` - The filename to display in the header
+/// * `old` - The original content
+/// * `new` - The modified content
 pub fn diff(file: &str, old: &str, new: &str) {
     print!("┌");
     println!("{:─^1$}", "─", 79);

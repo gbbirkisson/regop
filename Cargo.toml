@@ -2,7 +2,21 @@
 name = "regop"
 version = "0.4.2"
 edition = "2024"
+authors = ["Guðmundur Björn Birkisson"]
+description = "Easy file manipulation with regex and operators - find and transform text using powerful regex capture groups and transformation operators"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/gbbirkisson/regop"
+homepage = "https://github.com/gbbirkisson/regop"
+documentation = "https://docs.rs/regop"
+readme = "README.md"
+keywords = [
+  "regex",
+  "text-processing",
+  "cli",
+  "file-manipulation",
+  "transformation",
+]
+categories = ["command-line-utilities", "text-processing", "development-tools"]
 
 # The profile that 'dist' will build with
 [profile.dist]
@@ -16,6 +30,14 @@ unwrap_used = "deny"
 missing-errors-doc = "allow"
 missing-panics-doc = "allow"
 fallible_impl_from = "allow"
+
+[[bin]]
+name = "regop"
+path = "src/main.rs"
+
+[lib]
+name = "regop"
+path = "src/lib.rs"
 
 [dependencies]
 anyhow = "1.0.95"
