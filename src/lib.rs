@@ -1,3 +1,70 @@
+//! # regop
+//!
+//! Easy file manipulation with **reg**ex and **op**erators.
+//!
+//! `regop` is a command-line tool and library for performing powerful text transformations
+//! using regular expressions with named capture groups and a rich set of operators.
+//!
+//! ## Features
+//!
+//! - **Regex-based capture**: Use named capture groups to extract values from text
+//! - **Rich operators**: Transform captured values with operations like increment, decrement,
+//!   multiply, divide, replace, swap, append, prepend, and case conversion
+//! - **Batch operations**: Apply multiple operators to multiple files efficiently
+//! - **Safe transformations**: All edits are validated to prevent overlapping changes
+//! - **Flexible input**: Process files, stdin, or multiple files from piped input
+//!
+//! ## Quick Example
+//!
+//! ```no_run
+//! use regop::{Capture, Operator, process};
+//! use std::str::FromStr;
+//!
+//! // Create a capture for version numbers
+//! let capture = Capture::from_str(r#"version = "(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)""#).unwrap();
+//!
+//! // Create operators to increment major and reset patch
+//! let ops = vec![
+//!     Operator::from_str("<major>:inc").unwrap(),
+//!     Operator::from_str("<patch>:rep:0").unwrap(),
+//! ];
+//!
+//! // Process the content
+//! let content = r#"version = "1.2.3""#.to_string();
+//! let result = process(false, &[capture], &ops, content).unwrap();
+//!
+//! assert_eq!(result, Some(r#"version = "2.2.0""#.to_string()));
+//! ```
+//!
+//! ## Operators
+//!
+//! | Operation | Description | Default Parameter | Example |
+//! |-----------|-------------|-------------------|----------|
+//! | `inc` | Increment number | `1` | `<version>:inc:5` |
+//! | `dec` | Decrement number | `1` | `<count>:dec:2` |
+//! | `mul` | Multiply number | Required | `<value>:mul:3` |
+//! | `div` | Divide number | Required | `<total>:div:2` |
+//! | `rep` | Replace value | Required | `<name>:rep:new_name` |
+//! | `del` | Delete value | None | `<temp>:del` |
+//! | `swap` | Swap with another capture | Required | `<major>:swap:<minor>` |
+//! | `append` | Append text | Required | `<file>:append:.bak` |
+//! | `prepend` | Prepend text | Required | `<name>:prepend:prefix_` |
+//! | `upper` | Convert to uppercase | None | `<text>:upper` |
+//! | `lower` | Convert to lowercase | None | `<TEXT>:lower` |
+//!
+//! ## Command Line Usage
+//!
+//! ```bash
+//! # Increment edition in Cargo.toml
+//! regop -r 'edition = "(?<edition>[^"]+)' -o '<edition>:inc' Cargo.toml
+//!
+//! # Swap version numbers and multiply
+//! regop -r '(?<major>\d+)\.(?<minor>\d+)' -o '<major>:swap:<minor>' -o '<major>:mul:2' file.txt
+//!
+//! # Process multiple files from find
+//! find -name '*.toml' | regop -w -r '"(?<v>\d+)"' -o '<v>:inc'
+//! ```
+
 use std::collections::{HashMap, HashSet};
 use std::ops::{Add, Sub};
 use std::str::FromStr;
@@ -8,9 +75,26 @@ use regex::{Match, Regex};
 
 type CapturesMap<'a> = HashMap<String, Vec<(usize, usize, &'a str)>>;
 
+/// A compiled regular expression with its named capture groups.
+///
+/// This struct represents a regex pattern that can extract named values from text.
+/// The regex must use named capture groups in the format `(?<name>pattern)`.
+///
+/// # Examples
+///
+/// ```
+/// use regop::Capture;
+/// use std::str::FromStr;
+///
+/// let capture = Capture::from_str(r#"version = "(?<major>\d+)\.(?<minor>\d+)""#).unwrap();
+/// assert!(capture.names.contains("major"));
+/// assert!(capture.names.contains("minor"));
+/// ```
 #[derive(Debug, Clone)]
 pub struct Capture {
+    /// The compiled regular expression
     pub regex: Regex,
+    /// Set of all named capture groups in the regex
     pub names: HashSet<String>,
 }
 
@@ -27,32 +111,67 @@ impl FromStr for Capture {
     }
 }
 
+/// An operator that transforms captured values.
+///
+/// Operators are specified in the format `<target>:operation:parameter` where:
+/// - `target` is the name of a capture group
+/// - `operation` is the transformation to apply
+/// - `parameter` is optional depending on the operation
+///
+/// # Examples
+///
+/// ```
+/// use regop::Operator;
+/// use std::str::FromStr;
+///
+/// let op = Operator::from_str("<version>:inc:5").unwrap();
+/// let swap = Operator::from_str("<major>:swap:<minor>").unwrap();
+/// ```
 #[derive(Debug, Clone)]
 pub struct Operator {
+    /// The name of the capture group to operate on
     pub target: String,
+    /// The operation to perform
     pub op: Operation,
+    /// The parameter for the operation
     pub value: Param,
 }
 
+/// Available operations for transforming captured values.
 #[derive(Debug, Clone)]
 pub enum Operation {
+    /// Increment a number (default: by 1)
     Inc,
+    /// Decrement a number (default: by 1)
     Dec,
+    /// Replace with a new value
     Replace,
+    /// Delete the captured value
     Del,
+    /// Swap with another capture group
     Swap,
+    /// Multiply a number
     Mul,
+    /// Divide a number
     Div,
+    /// Append text to the end
     Append,
+    /// Prepend text to the beginning
     Prepend,
+    /// Convert to uppercase
     Upper,
+    /// Convert to lowercase
     Lower,
 }
 
+/// Parameter types for operations.
 #[derive(Debug, Clone)]
 pub enum Param {
+    /// An integer parameter
     Int(isize),
+    /// A string parameter
     String(String),
+    /// A reference to another capture group
     Capture(String),
 }
 
@@ -161,6 +280,35 @@ impl FromStr for Operator {
     }
 }
 
+/// Process content with the given captures and operators.
+///
+/// This is the main entry point for applying transformations to text.
+///
+/// # Arguments
+///
+/// * `lines` - If true, process each line independently
+/// * `regex` - List of capture patterns to match
+/// * `ops` - List of operators to apply to captures
+/// * `content` - The text content to process
+///
+/// # Returns
+///
+/// Returns `Some(String)` with transformed content if any changes were made,
+/// or `None` if no matches were found.
+///
+/// # Examples
+///
+/// ```
+/// use regop::{Capture, Operator, process};
+/// use std::str::FromStr;
+///
+/// let capture = Capture::from_str("value = (?<num>\\d+)").unwrap();
+/// let op = Operator::from_str("<num>:inc").unwrap();
+/// let content = "value = 42".to_string();
+///
+/// let result = process(false, &[capture], &[op], content).unwrap();
+/// assert_eq!(result, Some("value = 43".to_string()));
+/// ```
 pub fn process(
     lines: bool,
     regex: &[Capture],
@@ -186,6 +334,21 @@ pub fn process(
     }
 }
 
+/// Apply regex captures and operators to content.
+///
+/// This function handles the core logic of finding matches and applying transformations.
+/// Unlike `process`, this always treats the content as a single unit.
+///
+/// # Arguments
+///
+/// * `regex` - List of capture patterns to match
+/// * `ops` - List of operators to apply to captures  
+/// * `content` - The text content to process
+///
+/// # Returns
+///
+/// Returns `Some(String)` with transformed content if any changes were made,
+/// or `None` if no matches were found.
 pub fn regop(
     regex: &[Capture],
     ops: &[Operator],
@@ -204,6 +367,10 @@ pub fn regop(
     }
 }
 
+/// Collect capture group names that are used as values in operators.
+///
+/// This identifies which capture groups need to be collected before processing
+/// because they're referenced by other operators (e.g., `<a>:inc:<b>`).
 fn collect_captures_as_values(ops: &[Operator]) -> HashSet<String> {
     ops.iter()
         .filter_map(|op| {
@@ -220,6 +387,10 @@ fn collect_captures_as_values(ops: &[Operator]) -> HashSet<String> {
         .collect::<HashSet<_>>()
 }
 
+/// Collect all matches for capture groups that are used as values.
+///
+/// This pre-processes the content to find all matches for capture groups
+/// that will be used as parameters in operations.
 fn collect_value_captures<'a>(
     regex: &[Capture],
     content: &'a str,
@@ -254,6 +425,10 @@ fn collect_value_captures<'a>(
     Ok(captures)
 }
 
+/// Collect all edit operations to be applied to the content.
+///
+/// This processes all operators and regex matches to build a list of
+/// text transformations to apply.
 fn collect_edits(
     ops: &[Operator],
     regex: &[Capture],
@@ -273,6 +448,10 @@ fn collect_edits(
     Ok(edits)
 }
 
+/// Collect edit operations for swap operators.
+///
+/// Swap operations are special because they need to exchange values between
+/// two capture groups, requiring coordinated edits.
 fn collect_swap_edits(
     op: &Operator,
     regex: &[Capture],
@@ -334,6 +513,9 @@ fn collect_swap_edits(
     Ok(())
 }
 
+/// Collect edit operations for non-swap operators.
+///
+/// Processes standard operators like increment, replace, append, etc.
 fn collect_regular_edits(
     op: &Operator,
     regex: &[Capture],
@@ -353,6 +535,10 @@ fn collect_regular_edits(
     Ok(())
 }
 
+/// Apply all collected edits to the content.
+///
+/// Edits are sorted and applied in reverse order to maintain correct positions.
+/// This function also validates that edits don't overlap.
 fn apply_edits(content: &mut String, edits: &mut Vec<Edit>) -> anyhow::Result<()> {
     edits.sort_by_key(|e| e.start);
     edits.reverse();
@@ -368,12 +554,34 @@ fn apply_edits(content: &mut String, edits: &mut Vec<Edit>) -> anyhow::Result<()
     Ok(())
 }
 
+/// Represents a single text edit operation.
+///
+/// Edits are applied to the content after all matches are found to ensure
+/// non-overlapping changes.
 pub struct Edit {
+    /// Start position of the text to replace
     pub start: usize,
+    /// End position of the text to replace
     pub end: usize,
+    /// The new text to insert
     pub new: String,
 }
 
+/// Create an edit operation from a regex match and operator.
+///
+/// This function determines what text transformation to apply based on the
+/// operator type and its parameters.
+///
+/// # Arguments
+///
+/// * `op` - The operator to apply
+/// * `m` - The regex match
+/// * `old` - The original matched text
+/// * `captures` - Map of all captured values (for operations using capture references)
+///
+/// # Returns
+///
+/// Returns an `Edit` struct describing the transformation to apply.
 pub fn edit<'a>(
     op: &Operator,
     m: &Match<'_>,
@@ -458,11 +666,43 @@ pub fn edit<'a>(
     Ok(Edit { start, end, new })
 }
 
+/// Parse a string as an integer.
+///
+/// # Errors
+///
+/// Returns an error if the string cannot be parsed as an integer.
+///
+/// # Examples
+///
+/// ```
+/// use regop::parse_int;
+///
+/// assert_eq!(parse_int("42").unwrap(), 42);
+/// assert_eq!(parse_int("-10").unwrap(), -10);
+/// assert!(parse_int("not_a_number").is_err());
+/// ```
 pub fn parse_int(s: &str) -> anyhow::Result<isize> {
     s.parse::<isize>()
         .context(format!("cannot parse '{s}' as int"))
 }
 
+/// Calculate the distance between two non-overlapping ranges.
+///
+/// Returns `None` if the ranges overlap, otherwise returns the distance
+/// between them.
+///
+/// # Examples
+///
+/// ```
+/// use regop::distance;
+///
+/// // Non-overlapping ranges
+/// assert_eq!(distance(0, 5, 10, 15), Some(5));
+/// assert_eq!(distance(10, 15, 0, 5), Some(5));
+///
+/// // Overlapping ranges
+/// assert_eq!(distance(0, 10, 5, 15), None);
+/// ```
 #[must_use]
 pub const fn distance(start_a: usize, end_a: usize, start_b: usize, end_b: usize) -> Option<usize> {
     if end_a <= start_b {

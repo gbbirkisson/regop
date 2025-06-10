@@ -1,3 +1,8 @@
+//! Command-line interface for regop.
+//!
+//! This binary provides a powerful text transformation tool that uses
+//! regular expressions with named capture groups and operators.
+
 use std::fs;
 use std::io::Read;
 
@@ -8,6 +13,10 @@ mod diff;
 
 use regop::{Capture, Operator, process};
 
+/// Easy file manipulation with regex and operators.
+///
+/// Use regular expressions with named capture groups to extract values,
+/// then apply operators to transform those values.
 #[derive(Parser, Debug)]
 #[command(
     author,
@@ -66,6 +75,7 @@ struct Regop {
     file: Vec<String>,
 }
 
+/// Main entry point for the regop CLI.
 fn main() -> anyhow::Result<()> {
     let regop = Regop::parse();
 
@@ -86,6 +96,11 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
+/// Process a single file with the given regex patterns and operators.
+///
+/// Handles both regular files and stdin (when file is "-").
+/// In preview mode (default), shows a diff of changes.
+/// In write mode (-w flag), applies changes to the file.
 fn handle_file(regop: &Regop, file: &str) -> anyhow::Result<()> {
     let old_content = match file {
         "-" => {
