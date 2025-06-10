@@ -17,6 +17,14 @@ missing-errors-doc = "allow"
 missing-panics-doc = "allow"
 fallible_impl_from = "allow"
 
+[[bin]]
+name = "regop"
+path = "src/main.rs"
+
+[lib]
+name = "regop"
+path = "src/lib.rs"
+
 [dependencies]
 anyhow = "1.0.95"
 atty = "0.2.14"

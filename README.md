@@ -51,21 +51,36 @@ $ regop \
 ```
 
 ```bash
-# Swap anyhow major and patch version, increment minor by 3, decrement patch by 10
+# Swap anyhow major and patch version, increment minor by 3
 $ regop \
     -r 'anyhow = "(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)"' \
-    -o '<major>:rep:<patch>' \
+    -o '<major>:swap:<patch>' \
     -o '<minor>:inc:3' \
-    -o '<patch>:dec:10' \
     Cargo.toml
 ┌───────────────────────────────────────────────────────────────────────────────
 │ Cargo.toml
 ├───────────────────────────────────────────────────────────────────────────────
 │ 20  20   │ [dependencies]
 │ 21       │-anyhow = "1.0.95"
-│     21   │+anyhow = "95.3.85"
+│     21   │+anyhow = "95.3.1"
 │ 22  22   │ atty = "0.2.14"
 └───────────────────────────────────────────────────────────────────────────────
+```
+
+```bash
+# Multiply version numbers and convert package names to uppercase
+$ regop \
+    -r '(?<name>\w+) = "(?<version>\d+)"' \
+    -o '<name>:upper' \
+    -o '<version>:mul:2' \
+    dependencies.txt
+
+# Append suffix to filenames and prepend prefix
+$ regop \
+    -r 'file: (?<filename>\w+)' \
+    -o '<filename>:prepend:backup_' \
+    -o '<filename>:append:.bak' \
+    config.txt
 ```
 
 ```bash
@@ -117,12 +132,19 @@ Where:
 
 #### Table
 
-| Name  | Description | Default | Valid parameters | Examples |
-| ----- | ---------------- | ------ | --------------------- | ------------------------------------- |
-| `inc` | Increment number | `1`    | `int`, `<capture>`    | `<a>:inc`, `<a>:inc:5`, `<a>:inc:<b>` |
-| `dec` | Decrement number | `1`    | `int`, `<capture>`    | `<a>:dec`, `<a>:dec:5`, `<a>:inc:<b>` |
-| `rep` | Replace          | `None` | `string`, `<capture>` | `<a>:rep:mystring`, `<a>:rep:<b>`     |
-| `del` | Delete           | `None` | `None`                | `<a>:del`                             |
+| Name      | Description           | Default | Valid parameters      | Examples                                        |
+| --------- | --------------------- | ------- | --------------------- | ----------------------------------------------- |
+| `inc`     | Increment number      | `1`     | `int`, `<capture>`    | `<a>:inc`, `<a>:inc:5`, `<a>:inc:<b>`           |
+| `dec`     | Decrement number      | `1`     | `int`, `<capture>`    | `<a>:dec`, `<a>:dec:5`, `<a>:dec:<b>`           |
+| `mul`     | Multiply number       | `None`  | `int`, `<capture>`    | `<a>:mul:3`, `<a>:mul:<b>`                      |
+| `div`     | Divide number         | `None`  | `int`, `<capture>`    | `<a>:div:2`, `<a>:div:<b>`                      |
+| `rep`     | Replace               | `None`  | `string`, `<capture>` | `<a>:rep:mystring`, `<a>:rep:<b>`               |
+| `del`     | Delete                | `None`  | `None`                | `<a>:del`                                       |
+| `swap`    | Swap with another     | `None`  | `<capture>`           | `<a>:swap:<b>`                                  |
+| `append`  | Append text           | `None`  | `string`, `int`       | `<a>:append:_suffix`, `<a>:append:123`          |
+| `prepend` | Prepend text          | `None`  | `string`, `int`       | `<a>:prepend:prefix_`, `<a>:prepend:v`          |
+| `upper`   | Convert to uppercase  | `None`  | `None`                | `<a>:upper`                                     |
+| `lower`   | Convert to lowercase  | `None`  | `None`                | `<a>:lower`                                     |
 
 ## Installation 💻
 
