@@ -1,6 +1,6 @@
 [package]
 name = "regop"
-version = "0.4.2"
+version = "0.5.0"
 edition = "2024"
 authors = ["Guðmundur Björn Birkisson"]
 description = "Easy file manipulation with regex and operators - find and transform text using powerful regex capture groups and transformation operators"
