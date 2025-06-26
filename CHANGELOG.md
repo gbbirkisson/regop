@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/gbbirkisson/regop/compare/0.5.0...0.5.1) (2025-06-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rust to v1.88.0 ([#52](https://github.com/gbbirkisson/regop/issues/52)) ([7732c76](https://github.com/gbbirkisson/regop/commit/7732c76517fd9ccd1a5bcb4dbfb95872e54d3be1))
+
 ## [0.5.0](https://github.com/gbbirkisson/regop/compare/0.4.2...0.5.0) (2025-06-10)
 
 
