@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/gbbirkisson/regop/compare/0.5.0...0.5.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rust to v1.88.0 ([#52](https://github.com/gbbirkisson/regop/issues/52)) ([7732c76](https://github.com/gbbirkisson/regop/commit/7732c76517fd9ccd1a5bcb4dbfb95872e54d3be1))
+* **deps:** update rust crate console to 0.16.0 ([#54](https://github.com/gbbirkisson/regop/issues/54)) ([07ba0de](https://github.com/gbbirkisson/regop/commit/07ba0dea88d0f6c6c503c371a02e8769a5fb47c4))
+
 ## [0.5.0](https://github.com/gbbirkisson/regop/compare/0.4.2...0.5.0) (2025-06-10)
 
 
