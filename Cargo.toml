@@ -44,5 +44,5 @@ anyhow = "1.0.95"
 atty = "0.2.14"
 clap = { version = "4.5.28", features = ["derive"] }
 regex = "1.11.1"
-console = "0.15.10"
+console = "0.16.0"
 similar = { version = "2.7.0", features = ["inline"] }
