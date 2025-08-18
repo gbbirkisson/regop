@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.2](https://github.com/gbbirkisson/regop/compare/0.5.1...0.5.2) (2025-08-14)
+
+
+### Bug Fixes
+
+* **deps:** update amannn/action-semantic-pull-request action to v6 ([#65](https://github.com/gbbirkisson/regop/issues/65)) ([3a86264](https://github.com/gbbirkisson/regop/commit/3a8626402dd4384bfcbbe43c8617a7e9d1fb2d20))
+* **deps:** update dependency rust to v1.89.0 ([#60](https://github.com/gbbirkisson/regop/issues/60)) ([da13af9](https://github.com/gbbirkisson/regop/commit/da13af906a215a9926fb270fe4b3d456bb1f674d))
+* **deps:** update rust crate anyhow to v1.0.99 ([#63](https://github.com/gbbirkisson/regop/issues/63)) ([d48ff5a](https://github.com/gbbirkisson/regop/commit/d48ff5ac22f9b222a1380c0bbc6e5097f0d42257))
+* **deps:** update rust crate clap to v4.5.43 ([#58](https://github.com/gbbirkisson/regop/issues/58)) ([1d74e9a](https://github.com/gbbirkisson/regop/commit/1d74e9a72b919e4ac7b3bd907b97c1c54c0165f5))
+* **deps:** update rust crate clap to v4.5.44 ([#62](https://github.com/gbbirkisson/regop/issues/62)) ([0980b32](https://github.com/gbbirkisson/regop/commit/0980b32dfd5a7ca713ce123de41bd1fef341dbb1))
+* **deps:** update rust crate clap to v4.5.45 ([#64](https://github.com/gbbirkisson/regop/issues/64)) ([4225fce](https://github.com/gbbirkisson/regop/commit/4225fce6a8da4d559b1236d7cb48f9c69fb89c81))
+
 ## [0.5.1](https://github.com/gbbirkisson/regop/compare/0.5.0...0.5.1) (2025-07-30)
 
 
