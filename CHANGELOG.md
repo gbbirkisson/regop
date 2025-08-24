@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/gbbirkisson/regop/compare/0.5.2...0.5.3) (2025-08-24)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate regex to v1.11.2 ([#66](https://github.com/gbbirkisson/regop/issues/66)) ([f59da63](https://github.com/gbbirkisson/regop/commit/f59da63f807cdd29be0824bf004ef234663d911d))
+
 ## [0.5.2](https://github.com/gbbirkisson/regop/compare/0.5.1...0.5.2) (2025-08-14)
 
 
