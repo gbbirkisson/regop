@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.4](https://github.com/gbbirkisson/regop/compare/0.5.3...0.5.4) (2025-10-20)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate clap to v4.5.49 ([#77](https://github.com/gbbirkisson/regop/issues/77)) ([b38337a](https://github.com/gbbirkisson/regop/commit/b38337a5c93d10e6ab110e46c02eba81010d357a))
+* **deps:** update rust crate clap to v4.5.50 ([#79](https://github.com/gbbirkisson/regop/issues/79)) ([fffc4c7](https://github.com/gbbirkisson/regop/commit/fffc4c7fa9bc2a9a341717e89f80e4707dfa16ee))
+* **deps:** update rust crate regex to v1.12.1 ([#75](https://github.com/gbbirkisson/regop/issues/75)) ([f267c40](https://github.com/gbbirkisson/regop/commit/f267c4065563dafbb8d01e5741eb2d44f972b6c9))
+* **deps:** update rust crate regex to v1.12.2 ([#78](https://github.com/gbbirkisson/regop/issues/78)) ([94c7ffc](https://github.com/gbbirkisson/regop/commit/94c7ffc1c2b85a6161aaa1748c7e8c4e5681c6fe))
+
 ## [0.5.3](https://github.com/gbbirkisson/regop/compare/0.5.2...0.5.3) (2025-10-02)
 
 
