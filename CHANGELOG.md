@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.5.4](https://github.com/gbbirkisson/regop/compare/0.5.3...0.5.4) (2026-01-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency rust to v1.91.0 ([#83](https://github.com/gbbirkisson/regop/issues/83)) ([4b3cb2b](https://github.com/gbbirkisson/regop/commit/4b3cb2bb674416bc8c0d2ef322fb1291bf541547))
+* **deps:** update dependency rust to v1.91.1 ([#84](https://github.com/gbbirkisson/regop/issues/84)) ([a7c5eb6](https://github.com/gbbirkisson/regop/commit/a7c5eb6b3ee390148def5d349efef3b556d529f3))
+* **deps:** update dependency rust to v1.92.0 ([#88](https://github.com/gbbirkisson/regop/issues/88)) ([d18e776](https://github.com/gbbirkisson/regop/commit/d18e776f39a41ace20956fc361f7943b14d6ff10))
+* **deps:** update rust crate clap to v4.5.49 ([#77](https://github.com/gbbirkisson/regop/issues/77)) ([b38337a](https://github.com/gbbirkisson/regop/commit/b38337a5c93d10e6ab110e46c02eba81010d357a))
+* **deps:** update rust crate clap to v4.5.50 ([#79](https://github.com/gbbirkisson/regop/issues/79)) ([fffc4c7](https://github.com/gbbirkisson/regop/commit/fffc4c7fa9bc2a9a341717e89f80e4707dfa16ee))
+* **deps:** update rust crate clap to v4.5.51 ([#82](https://github.com/gbbirkisson/regop/issues/82)) ([848e798](https://github.com/gbbirkisson/regop/commit/848e79886ca39dd1256270d4f544fa3a2dad44a4))
+* **deps:** update rust crate clap to v4.5.52 ([#85](https://github.com/gbbirkisson/regop/issues/85)) ([8670685](https://github.com/gbbirkisson/regop/commit/8670685f925e66e9d91def0eb2050b6215c01141))
+* **deps:** update rust crate clap to v4.5.53 ([#86](https://github.com/gbbirkisson/regop/issues/86)) ([ec00110](https://github.com/gbbirkisson/regop/commit/ec00110189722892d5d3b06fcd67656d0f4fee59))
+* **deps:** update rust crate clap to v4.5.54 ([#92](https://github.com/gbbirkisson/regop/issues/92)) ([25c4965](https://github.com/gbbirkisson/regop/commit/25c496589dca2cd765ce7cd9260dcc51a5811d47))
+* **deps:** update rust crate console to v0.16.2 ([#91](https://github.com/gbbirkisson/regop/issues/91)) ([1736038](https://github.com/gbbirkisson/regop/commit/1736038707374bbd8987685b767f9c8419fbb517))
+* **deps:** update rust crate regex to v1.12.1 ([#75](https://github.com/gbbirkisson/regop/issues/75)) ([f267c40](https://github.com/gbbirkisson/regop/commit/f267c4065563dafbb8d01e5741eb2d44f972b6c9))
+* **deps:** update rust crate regex to v1.12.2 ([#78](https://github.com/gbbirkisson/regop/issues/78)) ([94c7ffc](https://github.com/gbbirkisson/regop/commit/94c7ffc1c2b85a6161aaa1748c7e8c4e5681c6fe))
+
 ## [0.5.3](https://github.com/gbbirkisson/regop/compare/0.5.2...0.5.3) (2025-10-02)
 
 
