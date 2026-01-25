@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.5](https://github.com/gbbirkisson/regop/compare/0.5.4...0.5.5) (2026-01-25)
+
+
+### Bug Fixes
+
+* **deps:** update cargo-dist ([#95](https://github.com/gbbirkisson/regop/issues/95)) ([1abac36](https://github.com/gbbirkisson/regop/commit/1abac36ea2d2fb7f6f45d0863e101e9546b2344e))
+* **deps:** update dependency rust to v1.93.0 ([#93](https://github.com/gbbirkisson/regop/issues/93)) ([1d54119](https://github.com/gbbirkisson/regop/commit/1d54119dc5882cc27fe9fa7a2489ede2cf7658c8))
+
 ## [0.5.4](https://github.com/gbbirkisson/regop/compare/0.5.3...0.5.4) (2026-01-03)
 
 
