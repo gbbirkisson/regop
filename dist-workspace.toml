@@ -6,7 +6,7 @@ members = ["cargo:."]
 # Whether dist should create a Github Release or use an existing draft
 create-release = false
 # The preferred dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.28.4"
+cargo-dist-version = "0.30.3"
 # CI backends to support
 ci = "github"
 # The installers to generate for each app
