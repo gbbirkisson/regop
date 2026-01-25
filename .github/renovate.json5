@@ -23,5 +23,19 @@
       packageNameTemplate: 'rust-lang/rust',
       datasourceTemplate: 'github-releases',
     },
+    {
+      customType: 'regex',
+      fileMatch: [
+        '^Justfile$',
+        '^\\.github/workflows/release\\.yml$',
+      ],
+      matchStrings: [
+        '--tag\\s+v(?<currentValue>\\d+\\.\\d+\\.\\d+)\\s+cargo-dist',
+        '/releases/download/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/cargo-dist-installer\\.sh',
+      ],
+      depNameTemplate: 'cargo-dist',
+      packageNameTemplate: 'axodotdev/cargo-dist',
+      datasourceTemplate: 'github-releases',
+    },
   ],
 }
