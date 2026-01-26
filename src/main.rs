@@ -4,7 +4,7 @@
 //! regular expressions with named capture groups and operators.
 
 use std::fs;
-use std::io::Read;
+use std::io::{IsTerminal, Read};
 
 use anyhow::{Context, ensure};
 use clap::Parser;
@@ -81,7 +81,7 @@ fn main() -> anyhow::Result<()> {
 
     if regop.file.is_empty() {
         ensure!(
-            !atty::is(atty::Stream::Stdin),
+            !std::io::stdin().is_terminal(),
             "supply filename or pipe a list of files to stdin"
         );
         for file in std::io::stdin().lines() {

@@ -71,7 +71,7 @@ use std::str::FromStr;
 use std::string::ToString;
 
 use anyhow::{Context, anyhow, bail, ensure};
-use regex::{Match, Regex};
+use regex::Regex;
 
 type CapturesMap<'a> = HashMap<String, Vec<(usize, usize, &'a str)>>;
 
@@ -342,7 +342,7 @@ pub fn process(
 /// # Arguments
 ///
 /// * `regex` - List of capture patterns to match
-/// * `ops` - List of operators to apply to captures  
+/// * `ops` - List of operators to apply to captures
 /// * `content` - The text content to process
 ///
 /// # Returns
@@ -354,9 +354,21 @@ pub fn regop(
     ops: &[Operator],
     mut content: String,
 ) -> anyhow::Result<Option<String>> {
-    let captures_as_values = collect_captures_as_values(ops);
-    let captures = collect_value_captures(regex, &content, &captures_as_values)?;
-    let mut edits = collect_edits(ops, regex, &content, &captures)?;
+    let captures = collect_all_captures(regex, &content);
+
+    // Validate that all captures used as values exist
+    for op in ops {
+        if let Param::Capture(name) = &op.value
+            && !matches!(op.op, Operation::Swap)
+        {
+            ensure!(
+                captures.contains_key(name),
+                format!("'<{name}>' used as value but not found")
+            );
+        }
+    }
+
+    let mut edits = collect_edits(ops, &captures)?;
 
     apply_edits(&mut content, &mut edits)?;
 
@@ -367,81 +379,39 @@ pub fn regop(
     }
 }
 
-/// Collect capture group names that are used as values in operators.
-///
-/// This identifies which capture groups need to be collected before processing
-/// because they're referenced by other operators (e.g., `<a>:inc:<b>`).
-fn collect_captures_as_values(ops: &[Operator]) -> HashSet<String> {
-    ops.iter()
-        .filter_map(|op| {
-            if let Param::Capture(c) = &op.value {
-                if matches!(op.op, Operation::Swap) {
-                    None
-                } else {
-                    Some(c.clone())
-                }
-            } else {
-                None
-            }
-        })
-        .collect::<HashSet<_>>()
-}
-
-/// Collect all matches for capture groups that are used as values.
-///
-/// This pre-processes the content to find all matches for capture groups
-/// that will be used as parameters in operations.
-fn collect_value_captures<'a>(
-    regex: &[Capture],
-    content: &'a str,
-    captures_as_values: &HashSet<String>,
-) -> anyhow::Result<CapturesMap<'a>> {
+/// Collect all named captures from the provided regexes.
+fn collect_all_captures<'a>(regex: &[Capture], content: &'a str) -> CapturesMap<'a> {
     let mut captures: CapturesMap = HashMap::new();
 
-    // First pass to get all value captures
     for cap in regex {
-        for name in &cap.names {
-            if captures_as_values.contains(name) {
-                for m in cap.regex.captures_iter(content) {
-                    for n in &cap.names {
-                        if let Some(m) = m.name(n) {
-                            let e = captures.entry(n.clone()).or_default();
-                            e.push((m.start(), m.end(), &content[m.start()..m.end()]));
-                        }
-                    }
+        for m in cap.regex.captures_iter(content) {
+            for name in &cap.names {
+                if let Some(m) = m.name(name) {
+                    captures.entry(name.clone()).or_default().push((
+                        m.start(),
+                        m.end(),
+                        m.as_str(),
+                    ));
                 }
-                break;
             }
         }
     }
 
-    for cap in captures_as_values {
-        ensure!(
-            captures.contains_key(cap),
-            format!("'<{cap}>' used as value but not found")
-        );
-    }
-
-    Ok(captures)
+    captures
 }
 
 /// Collect all edit operations to be applied to the content.
 ///
 /// This processes all operators and regex matches to build a list of
 /// text transformations to apply.
-fn collect_edits(
-    ops: &[Operator],
-    regex: &[Capture],
-    content: &str,
-    captures: &CapturesMap,
-) -> anyhow::Result<Vec<Edit>> {
+fn collect_edits(ops: &[Operator], captures: &CapturesMap) -> anyhow::Result<Vec<Edit>> {
     let mut edits = Vec::new();
 
     for op in ops {
         if matches!(op.op, Operation::Swap) {
-            collect_swap_edits(op, regex, content, &mut edits)?;
+            collect_swap_edits(op, captures, &mut edits)?;
         } else {
-            collect_regular_edits(op, regex, content, captures, &mut edits)?;
+            collect_regular_edits(op, captures, &mut edits)?;
         }
     }
 
@@ -454,8 +424,7 @@ fn collect_edits(
 /// two capture groups, requiring coordinated edits.
 fn collect_swap_edits(
     op: &Operator,
-    regex: &[Capture],
-    content: &str,
+    captures: &CapturesMap,
     edits: &mut Vec<Edit>,
 ) -> anyhow::Result<()> {
     let swap_target = match &op.value {
@@ -464,26 +433,8 @@ fn collect_swap_edits(
         Param::Int(i) => format!("{i}"),
     };
 
-    let mut source_matches = Vec::new();
-    let mut target_matches = Vec::new();
-
-    // Collect all matches for both source and target
-    for cap in regex {
-        if cap.names.contains(&op.target) {
-            for m in cap.regex.captures_iter(content) {
-                if let Some(m) = m.name(&op.target) {
-                    source_matches.push((m.start(), m.end(), &content[m.start()..m.end()]));
-                }
-            }
-        }
-        if cap.names.contains(&swap_target) {
-            for m in cap.regex.captures_iter(content) {
-                if let Some(m) = m.name(&swap_target) {
-                    target_matches.push((m.start(), m.end(), &content[m.start()..m.end()]));
-                }
-            }
-        }
-    }
+    let source_matches = captures.get(&op.target).cloned().unwrap_or_default();
+    let target_matches = captures.get(&swap_target).cloned().unwrap_or_default();
 
     ensure!(
         source_matches.len() == target_matches.len(),
@@ -518,18 +469,12 @@ fn collect_swap_edits(
 /// Processes standard operators like increment, replace, append, etc.
 fn collect_regular_edits(
     op: &Operator,
-    regex: &[Capture],
-    content: &str,
     captures: &CapturesMap,
     edits: &mut Vec<Edit>,
 ) -> anyhow::Result<()> {
-    for cap in regex {
-        if cap.names.contains(&op.target) {
-            for m in cap.regex.captures_iter(content) {
-                if let Some(m) = m.name(&op.target) {
-                    edits.push(edit(op, &m, &content[m.start()..m.end()], captures)?);
-                }
-            }
+    if let Some(matches) = captures.get(&op.target) {
+        for (start, end, val) in matches {
+            edits.push(edit(op, *start, *end, val, captures)?);
         }
     }
     Ok(())
@@ -575,7 +520,8 @@ pub struct Edit {
 /// # Arguments
 ///
 /// * `op` - The operator to apply
-/// * `m` - The regex match
+/// * `start` - Start position of the match
+/// * `end` - End position of the match
 /// * `old` - The original matched text
 /// * `captures` - Map of all captured values (for operations using capture references)
 ///
@@ -584,13 +530,11 @@ pub struct Edit {
 /// Returns an `Edit` struct describing the transformation to apply.
 pub fn edit<'a>(
     op: &Operator,
-    m: &Match<'_>,
+    start: usize,
+    end: usize,
     old: &'a str,
     captures: &CapturesMap<'a>,
 ) -> anyhow::Result<Edit> {
-    let start = m.start();
-    let end = m.end();
-
     let value = match &op.value {
         Param::Capture(name) => {
             let c = captures.get(name).map(|v| {
