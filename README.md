@@ -152,7 +152,7 @@ Where:
 
 <!--x-release-please-start-version-->
 ```bash
-$ cargo install --git https://github.com/gbbirkisson/regop.git --tag 0.5.5
+$ cargo install --git https://github.com/gbbirkisson/regop.git --tag 0.5.6
 ```
 <!--x-release-please-end-->
 
@@ -160,7 +160,7 @@ $ cargo install --git https://github.com/gbbirkisson/regop.git --tag 0.5.5
 
 <!--x-release-please-start-version-->
 ```bash
-$ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/gbbirkisson/regop/releases/download/0.5.5/regop-installer.sh | sh
+$ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/gbbirkisson/regop/releases/download/0.5.6/regop-installer.sh | sh
 ```
 <!--x-release-please-end-->
 
