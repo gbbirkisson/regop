@@ -48,4 +48,4 @@ install:
 
 # Install cargo dist
 install-dist:
-  cargo install --git https://github.com/axodotdev/cargo-dist.git --tag v0.31.0 cargo-dist
+  cargo install --git https://github.com/axodotdev/cargo-dist.git --tag v0.32.0 cargo-dist
