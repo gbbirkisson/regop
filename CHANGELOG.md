@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.5.6](https://github.com/gbbirkisson/regop/compare/0.5.5...0.5.6) (2026-06-30)
+
+
+### Bug Fixes
+
+* clean up dependencies and upgrade ([#96](https://github.com/gbbirkisson/regop/issues/96)) ([da0fbae](https://github.com/gbbirkisson/regop/commit/da0fbaeec80d1495a62a30f79c3a943688be83ac))
+* **deps:** update dependency cargo-dist to v0.30.4 ([#106](https://github.com/gbbirkisson/regop/issues/106)) ([dbe9f18](https://github.com/gbbirkisson/regop/commit/dbe9f1834845031f1c01c6e5d420ae02be3324a3))
+* **deps:** update dependency cargo-dist to v0.31.0 ([#109](https://github.com/gbbirkisson/regop/issues/109)) ([c989ad4](https://github.com/gbbirkisson/regop/commit/c989ad4aad8f1419ba1a59341dbc3ff328ffe741))
+* **deps:** update dependency cargo-dist to v0.32.0 ([#122](https://github.com/gbbirkisson/regop/issues/122)) ([4374a67](https://github.com/gbbirkisson/regop/commit/4374a67fe745b306c47f8d9aefd0c4c67b04085d))
+* **deps:** update dependency rust to v1.93.1 ([#104](https://github.com/gbbirkisson/regop/issues/104)) ([a07814a](https://github.com/gbbirkisson/regop/commit/a07814acee9d63b0c9e71e0ea414b1246fe2a94d))
+* **deps:** update dependency rust to v1.94.0 ([#112](https://github.com/gbbirkisson/regop/issues/112)) ([b2872c2](https://github.com/gbbirkisson/regop/commit/b2872c2a3d841d6554dd41bb4255939971d72436))
+* **deps:** update dependency rust to v1.94.1 ([#116](https://github.com/gbbirkisson/regop/issues/116)) ([c8d9753](https://github.com/gbbirkisson/regop/commit/c8d97531616b22de66fab24d1336535647c49cfa))
+* **deps:** update dependency rust to v1.95.0 ([#121](https://github.com/gbbirkisson/regop/issues/121)) ([9d40178](https://github.com/gbbirkisson/regop/commit/9d401783d4113b8df3c524e8751c4be334f16be7))
+* **deps:** update dependency rust to v1.96.0 ([#124](https://github.com/gbbirkisson/regop/issues/124)) ([ccade08](https://github.com/gbbirkisson/regop/commit/ccade08a534ac1b5082f0d6f64ee5248356c1c66))
+* **deps:** update extractions/setup-just action to v4 ([#118](https://github.com/gbbirkisson/regop/issues/118)) ([0635516](https://github.com/gbbirkisson/regop/commit/0635516ca33991ed3c27fc5a98dd34efe112e5a0))
+* **deps:** update marocchino/sticky-pull-request-comment action to v3 ([#114](https://github.com/gbbirkisson/regop/issues/114)) ([c05aa7c](https://github.com/gbbirkisson/regop/commit/c05aa7c84f9c454a54ca4634a73318f763ff7c7e))
+* **deps:** update rust crate anyhow to v1.0.101 ([#102](https://github.com/gbbirkisson/regop/issues/102)) ([251cbe4](https://github.com/gbbirkisson/regop/commit/251cbe4ba1a2c3b90a18443c7f5bd9dc71e754cc))
+* **deps:** update rust crate anyhow to v1.0.102 ([#108](https://github.com/gbbirkisson/regop/issues/108)) ([f78276e](https://github.com/gbbirkisson/regop/commit/f78276edacec4fa4444f6d53aadd8d71a4768c01))
+* **deps:** update rust crate anyhow to v1.0.103 ([#127](https://github.com/gbbirkisson/regop/issues/127)) ([912aefe](https://github.com/gbbirkisson/regop/commit/912aefe6b4ea9d348a595968bd6b0541709a06e7))
+* **deps:** update rust crate clap to v4.5.55 ([#98](https://github.com/gbbirkisson/regop/issues/98)) ([5cca9bb](https://github.com/gbbirkisson/regop/commit/5cca9bb6051e11ef499a81598ddc501df1866c6d))
+* **deps:** update rust crate clap to v4.5.56 ([#99](https://github.com/gbbirkisson/regop/issues/99)) ([c47c06d](https://github.com/gbbirkisson/regop/commit/c47c06dc2df3029dfe9bdb0c209aa385a03e8050))
+* **deps:** update rust crate clap to v4.5.57 ([#100](https://github.com/gbbirkisson/regop/issues/100)) ([de9cf0a](https://github.com/gbbirkisson/regop/commit/de9cf0adbecbb8b1f80693457b853452ab86e19a))
+* **deps:** update rust crate clap to v4.5.58 ([#103](https://github.com/gbbirkisson/regop/issues/103)) ([03ad799](https://github.com/gbbirkisson/regop/commit/03ad799b65817e3d0dbaf1edbf457688b14d76a9))
+* **deps:** update rust crate clap to v4.5.59 ([#105](https://github.com/gbbirkisson/regop/issues/105)) ([4959a23](https://github.com/gbbirkisson/regop/commit/4959a23373bf4b81f47771c8e45e25f4eaa92620))
+* **deps:** update rust crate clap to v4.5.60 ([#107](https://github.com/gbbirkisson/regop/issues/107)) ([23a8ade](https://github.com/gbbirkisson/regop/commit/23a8ade81be706199d11ba65d730aa18203d3ce8))
+* **deps:** update rust crate clap to v4.6.0 ([#113](https://github.com/gbbirkisson/regop/issues/113)) ([cbe6e82](https://github.com/gbbirkisson/regop/commit/cbe6e822551367b65e6a7fe049eb6b3e293d8a2e))
+* **deps:** update rust crate clap to v4.6.1 ([#120](https://github.com/gbbirkisson/regop/issues/120)) ([8d3377f](https://github.com/gbbirkisson/regop/commit/8d3377f45ba4e8414b6d9eb998c8c4af585b8407))
+* **deps:** update rust crate console to v0.16.3 ([#115](https://github.com/gbbirkisson/regop/issues/115)) ([9e532ca](https://github.com/gbbirkisson/regop/commit/9e532cae195ebad59d8e6327302318a01fd12cd2))
+* **deps:** update rust crate regex to v1.12.3 ([#101](https://github.com/gbbirkisson/regop/issues/101)) ([23bb48b](https://github.com/gbbirkisson/regop/commit/23bb48b7c35ef133dbd0a9426ece19dfd5216868))
+* **deps:** update rust crate regex to v1.12.4 ([#125](https://github.com/gbbirkisson/regop/issues/125)) ([dac54da](https://github.com/gbbirkisson/regop/commit/dac54da8acd3d5bd57680be15f2cad02e1d19d20))
+* **deps:** update rust crate similar to v3 ([#117](https://github.com/gbbirkisson/regop/issues/117)) ([905b042](https://github.com/gbbirkisson/regop/commit/905b0420c21f9fbb8d51f00dc80bcf473a5c4185))
+* **deps:** update rust crate similar to v3.1.0 ([#119](https://github.com/gbbirkisson/regop/issues/119)) ([27c8d01](https://github.com/gbbirkisson/regop/commit/27c8d017ffb79dfeef5e6207f1b123cb7814f339))
+* **deps:** update rust crate similar to v3.1.1 ([#123](https://github.com/gbbirkisson/regop/issues/123)) ([d3a8092](https://github.com/gbbirkisson/regop/commit/d3a80928900c8e170292667deec887b488bba044))
+* **deps:** update rust to v1.96.1 ([#128](https://github.com/gbbirkisson/regop/issues/128)) ([a47425a](https://github.com/gbbirkisson/regop/commit/a47425ab23b716eb913872e1657939009d3bc0bb))
+
 ## [0.5.5](https://github.com/gbbirkisson/regop/compare/0.5.4...0.5.5) (2026-01-25)
 
 
