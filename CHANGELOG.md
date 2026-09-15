@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.7](https://github.com/gbbirkisson/regop/compare/0.5.6...0.5.7) (2026-09-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cargo-dist to v0.33.0 ([#147](https://github.com/gbbirkisson/regop/issues/147)) ([770b697](https://github.com/gbbirkisson/regop/commit/770b697a6cffb27fc170431781237101526d3e95))
+* **deps:** update rust crate clap to v4.6.7 ([#148](https://github.com/gbbirkisson/regop/issues/148)) ([77013ef](https://github.com/gbbirkisson/regop/commit/77013ef7c4a49f0dc305e67aba3712805e1bc2bf))
+* **deps:** update rust crate console to v0.16.6 ([#146](https://github.com/gbbirkisson/regop/issues/146)) ([15a711d](https://github.com/gbbirkisson/regop/commit/15a711ddb8ead67091f4588f054b671be2f4d785))
+* **deps:** update rust crate similar to v3.2.0 ([#142](https://github.com/gbbirkisson/regop/issues/142)) ([b14c94b](https://github.com/gbbirkisson/regop/commit/b14c94b24aa8eb05516a3b610775e3bd2e049131))
+* **deps:** update rust to v1.98.0 ([#143](https://github.com/gbbirkisson/regop/issues/143)) ([9cc0fd2](https://github.com/gbbirkisson/regop/commit/9cc0fd2c2a061e379e10237f977515241bf319dc))
+* **deps:** update rust to v1.98.1 ([#145](https://github.com/gbbirkisson/regop/issues/145)) ([c1e93ba](https://github.com/gbbirkisson/regop/commit/c1e93ba4981a55319373958a3fa984972e4e254c))
+
 ## [0.5.6](https://github.com/gbbirkisson/regop/compare/0.5.5...0.5.6) (2026-08-11)
 
 
