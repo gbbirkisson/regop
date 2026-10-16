@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.8](https://github.com/gbbirkisson/regop/compare/0.5.7...0.5.8) (2026-10-16)
+
+
+### Bug Fixes
+
+* **deps:** update rust to v1.99.1 ([#151](https://github.com/gbbirkisson/regop/issues/151)) ([4cc878e](https://github.com/gbbirkisson/regop/commit/4cc878e63c8e8cdef9b0fcd852306e4b9fb06dea))
+
 ## [0.5.7](https://github.com/gbbirkisson/regop/compare/0.5.6...0.5.7) (2026-10-01)
 
 
