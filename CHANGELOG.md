@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.9](https://github.com/gbbirkisson/regop/compare/0.5.8...0.5.9) (2026-10-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cargo-dist to v0.33.1 ([#153](https://github.com/gbbirkisson/regop/issues/153)) ([889182c](https://github.com/gbbirkisson/regop/commit/889182caf448785a085cb66024f03e289a55a2f3))
+
 ## [0.5.8](https://github.com/gbbirkisson/regop/compare/0.5.7...0.5.8) (2026-10-16)
 
 
