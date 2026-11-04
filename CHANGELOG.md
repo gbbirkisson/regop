@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.9](https://github.com/gbbirkisson/regop/compare/0.5.8...0.5.9) (2026-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cargo-dist to v0.33.1 ([#153](https://github.com/gbbirkisson/regop/issues/153)) ([889182c](https://github.com/gbbirkisson/regop/commit/889182caf448785a085cb66024f03e289a55a2f3))
+* **deps:** update dependency cargo-dist to v0.34.0 ([#156](https://github.com/gbbirkisson/regop/issues/156)) ([e02f7b5](https://github.com/gbbirkisson/regop/commit/e02f7b5bdd1d83392672585225da721146e140b9))
+* **deps:** update rust crate similar to v3.2.1 ([#155](https://github.com/gbbirkisson/regop/issues/155)) ([b39a36d](https://github.com/gbbirkisson/regop/commit/b39a36d7396f1796b221e3465187b74406025964))
+
 ## [0.5.8](https://github.com/gbbirkisson/regop/compare/0.5.7...0.5.8) (2026-10-16)
 
 
